@@ -84,41 +84,40 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first):
 
 
                 if len(local_buffer):	
-			
-			print "[==>] Received %d bytes from localhost." % len(local_buffer)
-			hexdump(local_buffer)
+                        print("[==>] Received %d bytes from localhost." % len(local_buffer))
+                        hexdump(local_buffer)
 			
 			# send it to our request handler
-			local_buffer = request_handler(local_buffer)
+                        local_buffer = request_handler(local_buffer)
 			
 			# send off the data to the remote host
-			remote_socket.send(local_buffer)
-			print "[==>] Sent to remote."
+                        remote_socket.send(local_buffer)
+                        print("[==>] Sent to remote.")
 		
 		
 		# receive back the response
-		remote_buffer = receive_from(remote_socket)
+                remote_buffer = receive_from(remote_socket)
 
-		if len(remote_buffer):
+                if len(remote_buffer):
 			
-			print（"[<==] Received %d bytes from remote." % len(remote_buffer)）
-			hexdump(remote_buffer)
+                        print("[<==] Received %d bytes from remote." % len(remote_buffer))
+                        hexdump(remote_buffer)
 			
 			# send to our response handler
-			remote_buffer = response_handler(remote_buffer)
+                        remote_buffer = response_handler(remote_buffer)
 		
 			# send the response to the local socket
-			client_socket.send(remote_buffer)
+                        client_socket.send(remote_buffer)
 			
-			print("[<==] Sent to localhost.")
+                        print("[<==] Sent to localhost.")
 		
 		# if no more data on either side close the connections
-		if not len(local_buffer) or not len(remote_buffer):
-			client_socket.close()
-			remote_socket.close()
-			print("[*] No more data. Closing connections.")
+                if not len(local_buffer) or not len(remote_buffer):
+                        client_socket.close()
+                        remote_socket.close()
+                        print("[*] No more data. Closing connections.")
 		
-			break
+                        break
 		
 def server_loop(local_host,local_port,remote_host,remote_port,receive_first):
                 
@@ -131,7 +130,7 @@ def server_loop(local_host,local_port,remote_host,remote_port,receive_first):
                 print("[!!] Check for other listening sockets or correct permissions.")
                 sys.exit(0)
                 
-        print "[*] Listening on %s:%d" % (local_host,local_port)
+        print("[*] Listening on %s:%d" % (local_host,local_port))
         
         
         server.listen(5)        
