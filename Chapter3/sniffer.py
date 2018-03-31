@@ -2,7 +2,7 @@ import socket
 import os
 
 # host to listen on
-host = "192.168.0.196"
+host = "0.0.0.0"
 
 # create a raw socket and bind it to the public interface
 if os.name == "nt":
@@ -10,6 +10,8 @@ if os.name == "nt":
 else:
     socket_protocol = socket.IPPROTO_ICMP
 
+# Windows allow sniffing all incoming packets regardless of protocol
+# Linux need to specify that we are sniffing ICMP
 sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol) 
 
 sniffer.bind((host, 0))
@@ -23,7 +25,7 @@ if os.name == "nt":
     sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 
 # read in a single packet
-print sniffer.recvfrom(65565)
+print(sniffer.recvfrom(65565))
 
 # if we're on Windows turn off promiscuous mode
 if os.name == "nt": 

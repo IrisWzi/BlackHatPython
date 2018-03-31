@@ -4,7 +4,7 @@ import struct
 from ctypes import *
 
 # host to listen on
-host   = "192.168.0.187"
+host   = "0.0.0.0"
 
 class IP(Structure):
 
@@ -31,8 +31,9 @@ class IP(Structure):
         self.protocol_map = {1:"ICMP", 6:"TCP", 17:"UDP"}
 
         # human readable IP addresses
+        # inet_ntoa(): 32-bit to IP adress
         self.src_address = socket.inet_ntoa(struct.pack("<L",self.src))
-        self.dst_address = socket.inet_ntoa(struct.pack("<L",self.dst))
+        self.dst_address = socket.inet_ntoa(struct.pack("<L",self.dst)
 
         # human readable protocol
         try:
@@ -67,7 +68,7 @@ try:
         # create an IP header from the first 20 bytes of the buffer
         ip_header = IP(raw_buffer[0:20])
     
-        print "Protocol: %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address)
+        print("Protocol: %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))
         
 except KeyboardInterrupt:
     # if we're on Windows turn off promiscuous mode

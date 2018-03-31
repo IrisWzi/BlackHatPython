@@ -34,6 +34,8 @@ class IP(Structure):
         self.protocol_map = {1:"ICMP", 6:"TCP", 17:"UDP"}
         
         # human readable IP addresses
+        # "<" - little eindian | "L" - unsigned long
+        # struct.pack() return a bytes object
         self.src_address = socket.inet_ntoa(struct.pack("<L",self.src))
         self.dst_address = socket.inet_ntoa(struct.pack("<L",self.dst))
     
@@ -90,7 +92,7 @@ try:
         # create an IP header from the first 20 bytes of the buffer
         ip_header = IP(raw_buffer[0:20])
       
-        print "Protocol: %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address)
+        print("Protocol: %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))
     
         # if it's ICMP we want it
         if ip_header.protocol == "ICMP":
@@ -102,7 +104,7 @@ try:
             # create our ICMP structure
             icmp_header = ICMP(buf)
             
-            print "ICMP -> Type: %d Code: %d" % (icmp_header.type, icmp_header.code)
+            print("ICMP -> Type: %d Code: %d" % (icmp_header.type, icmp_header.code))
             
 # handle CTRL-C
 except KeyboardInterrupt:

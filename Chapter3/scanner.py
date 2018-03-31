@@ -13,14 +13,14 @@ host   = "192.168.0.187"
 subnet = "192.168.0.0/24"
 
 # magic we'll check ICMP responses for
-magic_message = "PYTHONRULES!"
+magic_message = b"PYTHONRULES!"
 
 def udp_sender(subnet,magic_message):
     sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     
     for ip in IPNetwork(subnet):
         try:
-            sender.sendto(magic_message,("%s" % ip,65212))
+            sender.sendto(magic_message.encode(),("%s" % ip,65212))
         except:
             pass
         
@@ -132,8 +132,8 @@ try:
                 if IPAddress(ip_header.src_address) in IPNetwork(subnet):
                     
                     # test for our magic message
-                    if raw_buffer[len(raw_buffer)-len(magic_message):] == magic_message:
-                        print "Host Up: %s" % ip_header.src_address
+                    if raw_buffer[len(raw_buffer)-len(magic_message):] == magic_message.encode():
+                        print("Host Up: %s" % ip_header.src_address)
 # handle CTRL-C
 except KeyboardInterrupt:
     # if we're on Windows turn off promiscuous mode
