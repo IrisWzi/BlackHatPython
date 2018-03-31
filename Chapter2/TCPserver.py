@@ -25,7 +25,7 @@ def handle_client(client_socket):
 
 while True:
     client,addr = server.accept()
-    print（"[*] Accepted connection from: %s:%d" % (addr[0],addr[1])）
+    print("[*] Accepted connection from: %s:%d" % (addr[0],addr[1]))
 
     # spin up our client thread to handle incoming data
     client_handler = threading.Thread(target=handle_client,args=(client,))

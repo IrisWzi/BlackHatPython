@@ -8,8 +8,8 @@ import subprocess
 
 
 # define some global variables
-listen             = False
-command            = False
+listen             = False      # True: server; False: client
+command            = False      # shell or not
 upload             = False
 execute            = ""
 target             = ""
@@ -26,7 +26,7 @@ def run_command(command):
         try:
                 output = subprocess.check_output(command,stderr=subprocess.STDOUT, shell=True)
         except:
-                output = "Failed to execute command.\r\n"
+                output = b"Failed to execute command.\r\n"
         
         # send the output back to the client
         return output
@@ -79,12 +79,12 @@ def client_handler(client_socket):
                 
                 while True:
                         # show a simple prompt
-                        client_socket.send("<BHP:#> ")
+                        client_socket.send(b"<BHP:#> ")
                         
                         # now we receive until we see a linefeed (enter key)
                         cmd_buffer = ""
                         while "\n" not in cmd_buffer:
-                                cmd_buffer += client_socket.recv(1024)
+                                cmd_buffer += client_socket.recv(1024).decode("utf-8")
                 
                         
                         # we have a valid command so execute it and send back the results
@@ -129,7 +129,7 @@ def client_sender(buffer):
                 
                 if len(buffer):
                         
-                        client.send(buffer)
+                        client.send(buffer.encode("utf-8"))
                 
                 while True:
                         
@@ -140,24 +140,24 @@ def client_sender(buffer):
                         while recv_len:
                                 data     = client.recv(4096)
                                 recv_len = len(data)
-                                response+= data
+                                response+= data.decode("utf-8")
                                 
                                 if recv_len < 4096:
                                         break
                         
-                        print response, 
+                        print(response, end=" ")
                         
                         # wait for more input
-                        buffer = raw_input("")
+                        buffer = input("")
                         buffer += "\n"                        
                         
                         # send it off
-                        client.send(buffer)
+                        client.send(buffer.encode("utf-8"))
                         
                 
         except:
                 # just catch generic errors - you can do your homework to beef this up
-                print "[*] Exception! Exiting."
+                print("[*] Exception! Exiting.")
                 
                 # teardown the connection                  
                 client.close()  
@@ -166,20 +166,17 @@ def client_sender(buffer):
         
 
 def usage():
-        print "Netcat Replacement"
-        print
-        print "Usage: bhpnet.py -t target_host -p port"
-        print "-l --listen                - listen on [host]:[port] for incoming connections"
-        print "-e --execute=file_to_run   - execute the given file upon receiving a connection"
-        print "-c --command               - initialize a command shell"
-        print "-u --upload=destination    - upon receiving connection upload a file and write to [destination]"
-        print
-        print
-        print "Examples: "
-        print "bhpnet.py -t 192.168.0.1 -p 5555 -l -c"
-        print "bhpnet.py -t 192.168.0.1 -p 5555 -l -u=c:\\target.exe"
-        print "bhpnet.py -t 192.168.0.1 -p 5555 -l -e=\"cat /etc/passwd\""
-        print "echo 'ABCDEFGHI' | ./bhpnet.py -t 192.168.11.12 -p 135"
+        print ("[Netcat Replacement]")
+        print ("Usage: replaceNetcat.py -t target_host -p port")
+        print ("\t-l --listen                - listen on [host]:[port] for incoming connections")
+        print ("\t-e --execute=file_to_run   - execute the given file upon receiving a connection")
+        print ("\t-c --command               - initialize a command shell")
+        print ("\t-u --upload=destination    - upon receiving connection upload a file and write to [destination]")
+        print ("Examples: ")
+        print ("\treplaceNetcat.py -t 192.168.0.1 -p 5555 -l -c")
+        print ("\treplaceNetcat.py -t 192.168.0.1 -p 5555 -l -u=c:\\target.exe")
+        print ("\treplaceNetcat.py -t 192.168.0.1 -p 5555 -l -e=\"cat /etc/passwd\"")
+        print ("\techo 'ABCDEFGHI' | ./replaceNetcat.py -t 192.168.11.12 -p 135")
         sys.exit(0)
 
 
@@ -198,7 +195,7 @@ def main():
         try:
                 opts, args = getopt.getopt(sys.argv[1:],"hle:t:p:cu:",["help","listen","execute","target","port","command","upload"])
         except getopt.GetoptError as err:
-                print str(err)
+                print(str(err))
                 usage()
                 
                 
